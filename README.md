@@ -37,6 +37,8 @@ jobs:
       - name: sync-issues-spreadsheet
         id: spreasheet-sync
         uses: nlm-pro/spreadsheet-sync@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           google-api-service-account-credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_DATA }}
           document-id: "<YOUR SPREADSHEET ID>"
@@ -65,31 +67,34 @@ Possible values for the `mode` option are:
 
 ## Requirements (Step-by-step)
 
-### 1. Enable the Google Spreadsheet API
+### Google Credentials
 
-Google provides a button for this:
+Open [Google IAM & Admin](https://console.cloud.google.com/iam-admin/) and [Create a Google Cloud Project](https://developers.google.com/workspace/guides/create-project) if you don't have one.
 
-![Step 1: Turn on the Google Sheets API](https://i.imgur.com/MYMe1yP.png)
+Select this project, [create service account credentials](https://developers.google.com/workspace/guides/create-credentials#service-account), and save the associated JSON
 
-Create a new API project and go to the "Credentials" section.
+![create service account](./docs/google-create-service-account.png)
 
-### 2. Create a Service Account
+![create key](./docs/google-create-key.png)
 
-![manage service account](https://i.imgur.com/60JAuFo.png)
+Finally, you need to enable the API by visiting <https://console.cloud.google.com/apis/library/sheets.googleapis.com> to avoid an `accessNotConfigured` error. Make sure to select the right user and project before clicking on the "enable" button.
 
-![create service account](https://i.imgur.com/Tyg7Evk.png)
+![enable API](./docs/google-spreadsheet-enable-api.png)
 
-Then download and save your service account credentials JSON.
+### Encrypted Secret
 
-More info: <https://developers.google.com/identity/protocols/oauth2/service-account#creatinganaccount>
+Store these JSON Credentials in an [Encrypted Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) for your Github repository (cf. the `google-api-service-account-credentials` option).
 
-### 3. Create a Google Spreadsheet
+![Secrets](./docs/gh-repo-actions-secrets.png)
 
-1. Create a new spreadsheet document with a dedicated sheet for GitHub Issues data.
-2. Add the Google API Service Account email to your document with editor access.
+> The `GITHUB_TOKEN` secret is set by default, so you don't need to define one. Owerver, you still need to pass it as an environement variable to the Github job using `env` as shown in the [example worflow](#quick-start).
 
-### 4. Pass JSON Service Account credentials content as a GitHub Secret
+### Spreadsheet
 
-![Secrets](https://i.imgur.com/egWxleC.png)
+Create a new (or open an existing) spreadsheet document and note its ID (the part of the URL between `/d/` and `/edit`). Use this ID for the `document-id` option.
 
-More info: <https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets>
+Create a dedicated sheet for GitHub Issues data (cf. the `sheet-name` option).
+
+Add the Google API Service Account email to your document with editor access.
+
+![new spreadsheet](./docs/new-spreadsheet.png)
