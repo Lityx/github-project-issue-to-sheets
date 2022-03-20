@@ -1,18 +1,21 @@
-name: 'Transfer GitHub Project Issues into Google Sheets'
-description: 'Do you want to import your Issues info into Google Sheets?'
+name: "Google Spreadsheet Synchronizer"
+description: "Sync GitHub Project Issues and/or PRs to a Google Spreadsheet"
 branding:
-  icon: 'bar-chart-2'  
-  color: 'green'
+  icon: "bar-chart-2"
+  color: "green"
 inputs:
   google-api-service-account-credentials:
-    description: "Google API Service Account credentials JSON"
+    description: " Google service account credentials (JSON)"
     required: true
   document-id:
-    description: "Google Sheets document ID"
+    description: "ID of your Google Spreadsheet "
     required: true
   sheet-name:
-    description: "Google Sheets list name to insert Issues data"
+    description: "name of the sheet to export to"
     required: true
+  mode:
+    description: "sync mode to use"
+    required: false
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "index.js"
