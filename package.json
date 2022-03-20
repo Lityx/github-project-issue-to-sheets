@@ -1,6 +1,6 @@
 {
   "name": "spreadsheet-sync",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Continuously export issues and pull requests data to a Google Spreadsheet",
   "main": "index.js",
   "scripts": {
