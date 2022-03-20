@@ -2,11 +2,15 @@
   "name": "spreadsheet-sync",
   "version": "3.0.0",
   "description": "Continuously export issues and pull requests data to a Google Spreadsheet",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "prepare": "husky install",
+    "prebuild": "rimraf dist/",
+    "build": "ncc build index.js -o dist --source-map --license licenses.txt",
+    "prepare": "npm run installhook && npm run build",
+    "installhook": "husky install",
     "lint": "markdownlint . && prettier --check .",
     "format": "markdownlint . --fix && prettier --write .",
+    "prerelease": "npm run build && git add dist/",
     "release": "standard-version",
     "release:test": "standard-version --dry-run"
   },
@@ -30,16 +34,18 @@
   "dependencies": {
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
+    "@octokit/auth-action": "^1.3.3",
     "@octokit/rest": "^18.12.0",
-    "googleapis": "^97.0.0",
-    "@octokit/auth-action": "^1.3.3"
+    "googleapis": "^97.0.0"
   },
   "devDependencies": {
     "@octokit/types": "^6.34.0",
+    "@vercel/ncc": "^0.33.3",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.7",
     "markdownlint-cli": "^0.31.1",
     "prettier": "^2.6.0",
+    "rimraf": "^3.0.2",
     "standard-version": "^9.3.2"
   },
   "lint-staged": {
