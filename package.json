@@ -8,8 +8,14 @@
     "build": "ncc build index.js -o dist --source-map --license licenses.txt",
     "prepare": "npm run installhook && npm run build",
     "installhook": "husky install",
-    "lint": "markdownlint . && prettier --check .",
-    "format": "markdownlint . --fix && prettier --write .",
+    "lint": "run-s lint:*",
+    "lint:md": "markdownlint .",
+    "lint:es": "eslint .",
+    "lint:prettier": "prettier --check .",
+    "format": "run-s format:*",
+    "format:md": "markdownlint . --fix",
+    "format:es": "eslint . --fix",
+    "format:prettier": "prettier --write .",
     "prerelease": "npm run build && git add dist/",
     "release": "standard-version",
     "release:test": "standard-version --dry-run"
@@ -41,15 +47,24 @@
   "devDependencies": {
     "@octokit/types": "^6.34.0",
     "@vercel/ncc": "^0.33.3",
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.4",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.7",
     "markdownlint-cli": "^0.31.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.6.0",
     "rimraf": "^3.0.2",
     "standard-version": "^9.3.2"
   },
   "lint-staged": {
-    "*.{js,yml}": "prettier --write",
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,yml}": "prettier --write",
     "*.md": [
       "prettier --write",
       "markdownlint --fix"
