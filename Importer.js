@@ -157,7 +157,7 @@ export class Importer {
               "Labels",
               "Assignees",
               "Milestone",
-              "Status",
+              "State",
               "Deadline",
               "URI",
               "Description",
