@@ -2,7 +2,7 @@
 
 Github Action to continuously export issues and pull requests data to a Google Spreadsheet
 
-![Spreadsheet](https://i.imgur.com/U2t3nmo.png)
+![Spreadsheet](./docs/demo.png)
 
 > A project initiated by [ViRGiL175](https://github.com/ViRGiL175/github-project-issue-to-sheets) with contributions from [Lityx](https://github.com/Lityx/github-project-issue-to-sheets).
 
