@@ -16,8 +16,7 @@
     "format:md": "markdownlint . --fix",
     "format:es": "eslint . --fix",
     "format:prettier": "prettier --write .",
-    "prerelease": "npm run build && git add dist/",
-    "release": "standard-version",
+    "release": "standard-version -a",
     "release:test": "standard-version --dry-run"
   },
   "repository": {
@@ -69,5 +68,10 @@
       "prettier --write",
       "markdownlint --fix"
     ]
+  },
+  "standard-version": {
+    "scripts": {
+      "prerelease": "npm run build && git add dist/"
+    }
   }
 }
