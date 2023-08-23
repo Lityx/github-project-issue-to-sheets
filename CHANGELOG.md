@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/nlm-pro/spreadsheet-sync/compare/v3.0.0...v4.0.0) (2022-03-20)
+
+### Bug Fixes
+
+- ambiguous field name ([a9a999c](https://github.com/nlm-pro/spreadsheet-sync/commit/a9a999ca3c2b5845882ddbf737fb70994d42bc4d))
+- broken distrib ([d4b28bc](https://github.com/nlm-pro/spreadsheet-sync/commit/d4b28bc68b0005f9943af89fd52d800b01492163))
+- missing documentation ([e6382a9](https://github.com/nlm-pro/spreadsheet-sync/commit/e6382a912dbbc9f21541b0f7488dcf335889f32b))
+
 ## [3.0.0](https://github.com/nlm-pro/spreadsheet-sync/compare/v2.0.0...v3.0.0) (2022-03-20)
 
 > Fork from [Lityx](https://github.com/Lityx/github-project-issue-to-sheets).
