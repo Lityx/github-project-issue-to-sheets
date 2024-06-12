@@ -1,73 +1,100 @@
-# github-project-issue-to-sheets
-Do you want to import your Issues info into Google Sheets?
+# Google Spreadsheet Synchronizer
 
-Sometimes we need Repository dashboard, Burndown Chart and other analytics. Google Sheets is the simplest way to build your custom dashboard!
+Github Action to continuously export issues and pull requests data to a Google Spreadsheet
 
-## But how?
-It's pretty easy. But it requires some steps:
+![Spreadsheet](./docs/demo.png)
 
-### 1. Enable Google Sheets API
+> A project initiated by [ViRGiL175](https://github.com/ViRGiL175/github-project-issue-to-sheets) with contributions from [Lityx](https://github.com/Lityx/github-project-issue-to-sheets).
 
-Google provides cozy button for this:
-![](https://i.imgur.com/MYMe1yP.png)
+## Quick Start
 
-Create new API project and go to Credentials section.
-
-### 2. Create Service Account
-
-![](https://i.imgur.com/60JAuFo.png)
-
-![](https://i.imgur.com/Tyg7Evk.png)
-
-Then download and save your service account credentials JSON.
-
-More info: https://developers.google.com/identity/protocols/oauth2/service-account#creatinganaccount
-
-### 3. Create Google Sheets document
-
-Then create new sheet for GitHub Issues data and add Google API Service Account email to your document with editor access
-
-### 4. Add Action to your repository and provide input data
+Create a [Github Action workflow](https://docs.github.com/en/actions/quickstart) as follow:
 
 ```yml
-name: github-project-issue-to-sheets
+name: sync-issues-spreadsheet
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   workflow_dispatch:
   issues:
-    types: [opened, deleted, transferred, closed, reopened, assigned, unassigned, labeled, unlabeled]
+    types:
+      [
+        opened,
+        deleted,
+        transferred,
+        closed,
+        reopened,
+        assigned,
+        unassigned,
+        labeled,
+        unlabeled,
+      ]
 
 jobs:
-    github-project-issue-to-sheets:
-        runs-on: ubuntu-latest
-        name: github-project-issue-to-sheets
-        steps:
-        - name: github-project-issue-to-sheets
-          id: github-project-issue-to-sheets
-          uses: ViRGiL175/github-project-issue-to-sheets@dev
-          with:
-            google-api-service-account-credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_DATA }}
-            document-id: '1b0UuGS_HXTGv-BE9dcB_58gZvo5fttyKgle0s4DmRNI'
-            sheet-name: 'GitHub Issues'
+  spreadsheet-sync:
+    runs-on: ubuntu-latest
+    name: sync-issues-spreadsheet
+    steps:
+      - name: sync-issues-spreadsheet
+        id: spreasheet-sync
+        uses: nlm-pro/spreadsheet-sync@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          google-api-service-account-credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_DATA }}
+          document-id: "<YOUR SPREADSHEET ID>"
+          sheet-name: "<NAME OF THE SHEET WHEN DATA WILL BE EXPORTED>"
+          mode: "issues"
 ```
 
-More info: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions
+**Don't forget to fulfill the [requirements](#requirements-step-by-step).**
 
-### 5. Pass JSON Service Account credentials content as GitHub Secret
+## Options
 
-![](https://i.imgur.com/egWxleC.png)
+| key                                      | description                               | mandatory             |
+| ---------------------------------------- | ----------------------------------------- | --------------------- |
+| `google-api-service-account-credentials` | Google service account credentials (JSON) | yes                   |
+| `document-id`                            | ID of your Google Spreadsheet             | yes                   |
+| `sheet-name`                             | name of the sheet to export to            | yes                   |
+| `mode`                                   | sync mode to use                          | no (`all` by default) |
 
-More info: https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
+### Modes
 
-### 6. Look at the exported Issues data in your Sheets document
+Possible values for the `mode` option are:
 
-![](https://i.imgur.com/U2t3nmo.png)
+- `all`: export all issues and PRs
+- `issues`: export issues only (exclude pull requests)
+- `milestone_issues`: only export issues associated with an active milestone
 
-## Modes
-There are few modes of exporting data to Google Sheet
+## Requirements (Step-by-step)
 
-* `all` = Export all types of issues.
-* `issues` = Export issues excluding pull request
-* `milestone_issues` = Export all issues within active milestones
+### Google Credentials
+
+Open [Google IAM & Admin](https://console.cloud.google.com/iam-admin/) and [Create a Google Cloud Project](https://developers.google.com/workspace/guides/create-project) if you don't have one.
+
+Select this project, [create service account credentials](https://developers.google.com/workspace/guides/create-credentials#service-account), and save the associated JSON
+
+![create service account](./docs/google-create-service-account.png)
+
+![create key](./docs/google-create-key.png)
+
+Finally, you need to enable the API by visiting <https://console.cloud.google.com/apis/library/sheets.googleapis.com> to avoid an `accessNotConfigured` error. Make sure to select the right user and project before clicking on the "enable" button.
+
+![enable API](./docs/google-spreadsheet-enable-api.png)
+
+### Encrypted Secret
+
+Store these JSON Credentials in an [Encrypted Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) for your Github repository (cf. the `google-api-service-account-credentials` option).
+
+![Secrets](./docs/gh-repo-actions-secrets.png)
+
+> The `GITHUB_TOKEN` secret is set by default, so you don't need to define one. Owerver, you still need to pass it as an environement variable to the Github job using `env` as shown in the [example worflow](#quick-start).
+
+### Spreadsheet
+
+Create a new (or open an existing) spreadsheet document and note its ID (the part of the URL between `/d/` and `/edit`). Use this ID for the `document-id` option.
+
+Create a dedicated sheet for GitHub Issues data (cf. the `sheet-name` option).
+
+Add the Google API Service Account email to your document with editor access.
+
+![new spreadsheet](./docs/new-spreadsheet.png)
